@@ -25,8 +25,7 @@ if dbCurson.connection:
                 `isp` text,\
                 `download` float,\
                 `upload` float,\
-                `date` date,\
-                `time` time,\
+                `timestamp` timestamp,\
                 PRIMARY KEY (`id`)\
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8")
             db.commit()
@@ -53,7 +52,7 @@ if dbCurson.connection:
 
         print("Current connection: "+isp+"\nDownload: "+str(download)+" Mbps\nUpload: "+str(upload)+" Mbps")
 
-        dbCurson.execute("INSERT INTO Speedtest(isp,download,upload,date,time) VALUES ('%s', '%f', '%f', CURDATE(), CURTIME())" % (isp,download,upload))
+        dbCurson.execute("INSERT INTO Speedtest(isp,download,upload,timestamp) VALUES ('%s', '%f', '%f', CURRENT_TIMESTAMP())" % (isp,download,upload))
         db.commit()
 
         print("Sleep for "+os.environ['TIME']+"s")
