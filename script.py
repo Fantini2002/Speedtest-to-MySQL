@@ -32,7 +32,7 @@ while 1:
 
     print("Current connection: "+isp+"\nDownload: "+str(download)+"\nUpload: "+str(upload))
 
-    dbCurson.execute("INSERT INTO Speedtest(isp,download,upload) VALUES ('%s', '%f', '%f')" % (isp,download,upload))
+    dbCurson.execute("INSERT INTO Speedtest(isp,download,upload,date,time) VALUES ('%s', '%f', '%f', CURDATE(), CURTIME())" % (isp,download,upload))
     db.commit()
 
     print("Sleep for "+os.environ['TIME'])
