@@ -36,27 +36,34 @@ if dbCurson.connection:
 
     while 1:
         print("Starting speedtest...")
-        s = speedtest.Speedtest()
-        s.get_servers()
-        s.get_best_server()
+        try:
+            s = speedtest.Speedtest()
+            s.get_servers()
+            s.get_best_server()
 
-        isp = s.config['client']['isp']
+            isp = s.config['client']['isp']
 
-        download = s.download()
-        download /= pow(10,6) #convert to mbits/s
-        download = round(download, 2) #round
+            download = s.download()
+            download /= pow(10,6) #convert to mbits/s
+            download = round(download, 2) #round
 
-        upload = s.upload()
-        upload /= pow(10,6) #convert to mbits/s
-        upload = round(upload, 2) #round
+            upload = s.upload()
+            upload /= pow(10,6) #convert to mbits/s
+            upload = round(upload, 2) #round
 
-        print("Current connection: "+isp+"\nDownload: "+str(download)+" Mbps\nUpload: "+str(upload)+" Mbps")
+            print("Current connection: "+isp+"\nDownload: "+str(download)+" Mbps\nUpload: "+str(upload)+" Mbps")
 
-        dbCurson.execute("INSERT INTO Speedtest(isp,download,upload,timestamp) VALUES ('%s', '%f', '%f', CURRENT_TIMESTAMP())" % (isp,download,upload))
-        db.commit()
+            try:
+                dbCurson.execute("INSERT INTO Speedtest(isp,download,upload,timestamp) VALUES ('%s', '%f', '%f', CURRENT_TIMESTAMP())" % (isp,download,upload))
+                db.commit()
+            except pymysql.Error as e:
+                print("Error %d entering new data: %s" % (e.args[0], e.args[1]))
 
-        print("Sleep for "+os.environ['TIME']+"s")
-        time.sleep(int(os.environ['TIME']))
+            print("Sleep for "+os.environ['TIME']+"s")
+            time.sleep(int(os.environ['TIME']))
+        except:
+            print("Error doing speedtest")
+            time.sleep(60)
 
     db.close()
 
